@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-catalog-service-db-deployment
+  namespace: shoppie-ms
+spec:
+  selector:
+    matchLabels:
+      app: product-catalog-service-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: product-catalog-service-db
+    spec:
+      containers:
+      - image: dhub.pubalibankbd.com/postgres/postgres:17
+        name: product-catalog-service-db
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "200Mi"
+            cpu: "500m"
+        envFrom:
+        - secretRef:
+            name: product-catalog-db-secret
+        ports:
+        - containerPort: 5432
+          name: pgsql-port
+        volumeMounts:
+        - name: product-catalog-service-db-persistent-storage
+          mountPath: /var/lib/postgresql/data/
+      volumes:
+      - name: product-catalog-service-db-persistent-storage
+        persistentVolumeClaim:
+          claimName: product-catalog-db-pv-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-catalog-service-db-svc
+  namespace: shoppie-ms
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: product-catalog-service-db

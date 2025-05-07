@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-service-deployment
+  namespace: shoppie-ms
+  labels:
+    app: frontend-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-service
+  template:
+    metadata:
+      labels:
+        app: frontend-service
+    spec:
+      containers:
+      - name: frontend-service
+        image: dhub.pubalibankbd.com/shoppie_ms/shoppie-frontend:v1.0.3
+        # resources:
+        #   requests:
+        #     memory: "100Mi"
+        #     cpu: "250m"
+        #   limits:
+        #     memory: "300Mi"
+        #     cpu: "500m"
+        ports:
+        - containerPort: 80
+        envFrom:
+        - secretRef:
+            name: frontend-service-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service-svc
+  namespace: shoppie-ms
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+    nodePort: 30022
+  selector:
+    app: frontend-service
+  type: NodePort
+

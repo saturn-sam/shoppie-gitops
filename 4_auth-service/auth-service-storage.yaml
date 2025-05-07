@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: auth-app-static-pvc
+  namespace: shoppie-ms
+spec:
+  storageClassName: nfs-csi
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: auth-app-media-pvc
+  namespace: shoppie-ms
+spec:
+  storageClassName: nfs-csi
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Mi

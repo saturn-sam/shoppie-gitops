@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service-db-deployment
+  namespace: shoppie-ms
+spec:
+  selector:
+    matchLabels:
+      app: payment-service-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: payment-service-db
+    spec:
+      containers:
+      - image: dhub.pubalibankbd.com/postgres/postgres:17
+        name: payment-service-db
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "200Mi"
+            cpu: "500m"
+        envFrom:
+        - secretRef:
+            name: payment-db-secret
+        ports:
+        - containerPort: 5432
+          name: pgsql-port
+        volumeMounts:
+        - name: payment-service-db-persistent-storage
+          mountPath: /var/lib/postgresql/data/
+      volumes:
+      - name: payment-service-db-persistent-storage
+        persistentVolumeClaim:
+          claimName: payment-db-pv-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service-db-svc
+  namespace: shoppie-ms
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: payment-service-db

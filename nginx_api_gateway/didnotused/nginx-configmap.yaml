@@ -1,0 +1,3 @@
+kubectl create configmap shoppie-apigw-config --from-file=nginx.conf=./nginx.conf --namespace shoppie
+
+kubectl delete configmap shoppie-apigw-config --namespace shoppie

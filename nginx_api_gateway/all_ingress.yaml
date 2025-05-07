@@ -1,0 +1,75 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: shoppie-ms-internal-ingress
+  namespace: shoppie-ms
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-protocols: "TLSv1.2 TLSv1.3"
+    nginx.ingress.kubernetes.io/ssl-ciphers: "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - shoppie-ms-apigw.pubalibankbd.com
+      secretName: api-gateway-tls
+  rules:
+    - host: shoppie-ms-apigw.pubalibankbd.com
+      http:
+        paths:
+          - path: /api/auth
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-service-svc
+                port:
+                  number: 8000
+          - path: /inventory-api
+            pathType: Prefix
+            backend:
+              service:
+                name: inventory-service-svc
+                port:
+                  number: 5000
+          - path: /catalog-api
+            pathType: Prefix
+            backend:
+              service:
+                name: product-catalog-service-svc
+                port:
+                  number: 5000
+          - path: /cart-api
+            pathType: Prefix
+            backend:
+              service:
+                name: cart-service-svc
+                port:
+                  number: 5000
+          - path: /order-api
+            pathType: Prefix
+            backend:
+              service:
+                name: order-service-svc
+                port:
+                  number: 5000
+          - path: /payment-api
+            pathType: Prefix
+            backend:
+              service:
+                name: payment-service-svc
+                port:
+                  number: 5000
+          - path: /shipping-api
+            pathType: Prefix
+            backend:
+              service:
+                name: shipping-service-svc
+                port:
+                  number: 5000
+          - path: /analytics-api
+            pathType: Prefix
+            backend:
+              service:
+                name: analytics-service-svc
+                port:
+                  number: 5000

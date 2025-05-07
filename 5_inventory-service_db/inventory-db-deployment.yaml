@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory-db-deployment
+  namespace: shoppie-ms
+spec:
+  selector:
+    matchLabels:
+      app: inventory-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: inventory-db
+    spec:
+      containers:
+      - image: dhub.pubalibankbd.com/postgres/postgres:17
+        name: inventory-db
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "200Mi"
+            cpu: "500m"
+
+        envFrom:
+        - secretRef:
+            name: inventory-db-secret
+
+        ports:
+        - containerPort: 5432
+          name: mysql-port
+        volumeMounts:
+        - name: inventory-db-persistent-storage
+          mountPath: /var/lib/postgresql/data/
+      volumes:
+      - name: inventory-db-persistent-storage
+        persistentVolumeClaim:
+          claimName: inventory-db-pv-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: inventory-db-svc
+  namespace: shoppie-ms
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: inventory-db
