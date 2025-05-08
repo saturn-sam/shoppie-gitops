@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: auth-service-app
-        image: dhub.pubalibankbd.com/shoppie_ms/shoppie-auth-service:v1.0.2
+        image: dhub.pubalibankbd.com/shoppie_ms/shoppie-auth-service:v1.0.7
         resources:
           requests:
             memory: "64Mi"
