@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: order-service
-        image: dhub.pubalibankbd.com/shoppie_ms/shoppie-order-service:v1.0.2
+        image: dhub.pubalibankbd.com/shoppie_ms/shoppie-order-service:v1.0.3
         resources:
           requests:
             memory: "64Mi"
